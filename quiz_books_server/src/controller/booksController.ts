@@ -4,14 +4,23 @@ import booksModel from "../model/booksModel"
 
 export default class PapersController {
     constructor(private readonly booksModel: booksModel) { }
-    getReferences = (_req: Request, res: Response): void => {
-        const references = this.booksModel.getbooks()
-        references.then((books) => {
-            res.status(200).json({ books })
-        }).catch (() => {
-            res.status(500).json({ message: 'error' })
-        })
-    }
+    getBooks = (req: Request, res: Response): void => {
+      const { paginaActual } = req.query
+      let indexPage = 1
+      if(paginaActual) {
+          const pag = paginaActual.toString()
+          indexPage = parseInt(pag)
+      }
+
+      const books = this.booksModel.getbooks(indexPage)
+
+      books.then((books) => { 
+
+          res.status(200).json({books: books})
+      }).catch((e) => {
+          res.status(500).json({error: e})
+      })
+  }
 
     getAuthors = (req:Request, res: Response): void =>{
         const {author} = req.params

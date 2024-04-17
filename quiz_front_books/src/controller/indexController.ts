@@ -9,10 +9,16 @@ export default class indexController{
   ){
     console.log(this.view);
     console.log(this.model);
+    this.view.setController(this)
   }
 
   public start():void{
     this.view.deploy(this.model.getBook())
+    this.view.searchAuthor()
+  }
 
+  public sendData(valor_busqueda: string):void{
+    this.view.deploy(this.model.searchAuthor(valor_busqueda))
+    console.log(valor_busqueda)
   }
 }

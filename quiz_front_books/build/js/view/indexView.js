@@ -1,5 +1,8 @@
 export default class indexView {
     constructor() {
+        this.setController = (controller) => {
+            this.controller = controller;
+        };
         this.printBooks = (book) => {
             // let keywordsList = '';
             // if (book.categories) {
@@ -18,7 +21,7 @@ export default class indexView {
             <div class="col-md-8">
               <h2>${book.title}</h2>
               <p><strong>ISBN:</strong> ${book.isbn}</p>
-              <p><strong>Authors:</strong>${book.authors}</p>
+              <p><strong>Authors:</strong> &nbsp${book.authors}</p>
               <p><strong>Published Date:</strong> ${(_a = book.publishedDate) === null || _a === void 0 ? void 0 : _a.$date}</p>
               <p><strong>Page Count:</strong> ${book.pageCount}</p>
               <h4>Short Description:</h4>
@@ -27,8 +30,8 @@ export default class indexView {
               <p>${book.longDescription}</p>
               <h4>Categories:</h4>
               <ul>
-                <li>Open Source</li>
-                <li>Mobile</li>
+                <li>${book.categories}</li>
+
               </ul>
               <a href="#" class="btn btn-primary mt-3"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag" viewBox="0 0 16 16">
   <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/>
@@ -58,7 +61,10 @@ export default class indexView {
 
   `;
         };
+        console.log("Indexview");
         this.contenedor_books = document.querySelector('#sec');
+        this.search_bar = document.querySelector('#search_input');
+        this.form_search = document.querySelector('#search_form');
     }
     deploy(bookPromise) {
         bookPromise.then((books) => {
@@ -67,6 +73,15 @@ export default class indexView {
             });
         }).catch((err) => {
             console.error(err);
+        });
+    }
+    searchAuthor() {
+        this.form_search.addEventListener('submit', (event) => {
+            var _a;
+            event.preventDefault();
+            const valor_busqueda = this.search_bar.value;
+            console.log(valor_busqueda);
+            (_a = this.controller) === null || _a === void 0 ? void 0 : _a.sendData(valor_busqueda);
         });
     }
 }

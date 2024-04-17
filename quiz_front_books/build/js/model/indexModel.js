@@ -29,4 +29,25 @@ export default class indexModel {
             });
         });
     }
+    searchAuthor(author) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((resolve, reject) => {
+                console.log(author);
+                const formattedAuthor = author.replace(/\s/g, "%20");
+                console.log(formattedAuthor);
+                const response = fetch(`http://localhost:3000/books/${formattedAuthor}`, {
+                    method: 'GET',
+                    headers: {
+                        "Content-type": 'application/json'
+                    }
+                });
+                response.then((data) => __awaiter(this, void 0, void 0, function* () {
+                    resolve(data.json());
+                    console.log(data);
+                })).catch((error) => {
+                    reject(error);
+                });
+            });
+        });
+    }
 }
