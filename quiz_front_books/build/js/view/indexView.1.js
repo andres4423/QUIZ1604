@@ -1,3 +1,12 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 export default class indexView {
     constructor() {
         this.setController = (controller) => {
@@ -63,17 +72,58 @@ export default class indexView {
         this.form_search = document.querySelector('#search_form');
         this.paginacion = document.querySelector('.pagination justify-content-center');
     }
+    // public deploy(bookPromise: (Promise<bookInterface[]>)):void{
+    // this.contenedor_books.innerHTML = ''
+    // bookPromise.then((books)=>{
+    // console.log(books);
+    // const libros = books.books
+    // libros.forEach((libro: bookInterface)=>{
+    // this.contenedor_books.innerHTML += this.printBooks(libro)
+    // })
+    // }).catch((err)=>{
+    //   console.error(err)
+    // })
+    // }
     deploy(bookPromise) {
-        this.contenedor_books.innerHTML = '';
-        bookPromise.then((books) => {
+        bookPromise.then(({ books, totalPages, currentPage }) => {
             console.log(books);
-            const libros = books.books;
-            libros.forEach((libro) => {
+            this.contenedor_books.innerHTML = ''; // Limpia el contenedor antes de agregar los libros
+            // Agrega los libros al contenedor
+            books.forEach((libro) => {
                 this.contenedor_books.innerHTML += this.printBooks(libro);
             });
+            // Actualiza la paginación
+            this.updatePagination(totalPages, currentPage);
         }).catch((err) => {
             console.error(err);
+            // Maneja el error si es necesario
         });
+    }
+    updatePagination(totalPages, currentPage) {
+        const paginationContainer = document.getElementById('pagination');
+        paginationContainer.innerHTML = ''; // Limpia la paginación antes de actualizarla
+        // Agrega los botones de página anterior y siguiente (si es necesario)
+        // Agrega los números de página
+        for (let i = 1; i <= totalPages; i++) {
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.classList.add('page-link');
+            a.textContent = `${i}`;
+            a.dataset.page = `${i}`;
+            li.appendChild(a);
+            if (i === currentPage) {
+                li.classList.add('active');
+            }
+            paginationContainer.appendChild(li);
+        }
+        // Escucha los clics en los números de página
+        paginationContainer.addEventListener('click', (event) => __awaiter(this, void 0, void 0, function* () {
+            const pageNumber = event.target.dataset.page;
+            if (pageNumber) {
+                const bookPromise = this.model.getBook(parseInt(pageNumber));
+                yield this.deploy(bookPromise);
+            }
+        }));
     }
     searchAuthor() {
         this.form_search.addEventListener('submit', (event) => {

@@ -1,6 +1,7 @@
 import indexModel from "../model/indexModel.js";
 import indexView from "../view/indexView.js";
 
+
 export default class indexController{
 
   constructor(
@@ -13,9 +14,10 @@ export default class indexController{
   }
 
   public start():void{
-    this.view.deploy(this.model.getBook())
+    this.view.deploy(this.model.getBook(2))
     this.view.searchAuthor()
   }
+
 
   public sendData(valor_busqueda: string):void{
     this.view.deploy(this.model.searchAuthor(valor_busqueda))

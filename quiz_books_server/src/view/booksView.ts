@@ -10,6 +10,6 @@ export default class booksView {
 
     routes = (): void => {
         this.router.get('/books', this.booksController.getBooks.bind(this.booksController))
-         this.router.get('/books/:author', this.booksController.getAuthors.bind(this.booksController))
+        this.router.get('/books/:author', this.booksController.getAuthors.bind(this.booksController))
     }
   }

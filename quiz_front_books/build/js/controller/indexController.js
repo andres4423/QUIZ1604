@@ -7,7 +7,7 @@ export default class indexController {
         this.view.setController(this);
     }
     start() {
-        this.view.deploy(this.model.getBook());
+        this.view.deploy(this.model.getBook(2));
         this.view.searchAuthor();
     }
     sendData(valor_busqueda) {

@@ -10,25 +10,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 export default class indexModel {
     constructor() {
     }
-    getBook() {
+    getBook(currentPage) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
-                const response = fetch("http://localhost:3000/books", {
+                const response = fetch(`http://localhost:3000/books?paginaActual=${currentPage}`, {
                     method: 'GET',
                     headers: {
                         "Content-type": 'application/json'
                     }
                 });
                 response.then((data) => __awaiter(this, void 0, void 0, function* () {
-                    let books = yield data.json();
-                    let books2 = books.books;
-                    resolve(books2);
+                    resolve(data.json());
+                    console.log(data);
                 })).catch((error) => {
                     reject(error);
                 });
             });
         });
     }
+    ;
     searchAuthor(author) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
