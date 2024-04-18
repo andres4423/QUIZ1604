@@ -13,7 +13,7 @@ constructor(){
 this.contenedor_books = document.querySelector('#sec') as HTMLDivElement
 this.search_bar = document.querySelector('#search_input') as HTMLInputElement
 this.form_search = document.querySelector('#search_form') as HTMLFormElement
-this.paginacion = document.querySelector('.pagination justify-content-center') as HTMLUListElement
+this.paginacion = document.querySelector('.pagination') as HTMLUListElement
 }
 
 public setController = (controller: indexController):void =>{
@@ -21,20 +21,86 @@ public setController = (controller: indexController):void =>{
 }
 
 
-public deploy(bookPromise: (Promise<bookInterface[]>)):void{
 
-this.contenedor_books.innerHTML = ''
-bookPromise.then((books)=>{
-console.log(books);
-const libros = books.books
-libros.forEach((libro: bookInterface)=>{
 
-this.contenedor_books.innerHTML += this.printBooks(libro)
-})
-}).catch((err)=>{
-  console.error(err)
-})
-}
+
+
+
+public deploy(bookPromise: Promise<bookInterface[]>, currentPage: number):void{
+
+//  this.contenedor_books.innerHTML = ''
+//   bookPromise.then((books)=>{
+//   console.log(books);
+//   const libros = books.books
+//   libros.forEach((libro: bookInterface)=>{
+
+//   this.contenedor_books.innerHTML += this.printBooks(libro)
+//   })
+//   }).catch((err)=>{
+//     console.error(err)
+//   })
+
+// }
+
+bookPromise.then((books) => {
+  const libros = books.books;
+  this.contenedor_books.innerHTML = '';
+
+  libros.forEach((book: bookInterface) => {
+    this.contenedor_books.innerHTML += this.printBooks(book);
+  });
+
+  // Remove previous pagination
+  this.paginacion.innerHTML = '';
+
+  // Calculate total pages (assumed)
+  const totalBooks = books.total;
+  const totalPages = Math.ceil(totalBooks / 5);
+
+  // Calculate start and end page based on current page
+  let startPage = Math.max(1, currentPage - 5);
+  let endPage = Math.min(totalPages, startPage + 9);
+
+  // Adjust start and end page if there are less than 10 pages
+  if (totalPages <= 10) {
+    startPage = 1;
+    endPage = totalPages;
+  } else {
+    // Adjust start and end page if current page is close to beginning or end
+    if (currentPage <= 5) {
+      endPage = 20;
+    } else if (currentPage >= totalPages - 4) {
+      startPage = totalPages - 9;
+    }
+  }
+
+  // Generate pagination
+  for (let i = startPage; i <= endPage; i++) {
+    const li = document.createElement('li');
+    li.classList.add('page-item');
+
+    const a = document.createElement('a');
+    a.classList.add('page-link');
+    a.href = '#';
+    a.textContent = i.toString();
+
+    // Add event listener to handle page navigation
+    a.addEventListener('click', () => {
+      this.controller?.sendPage(i);
+    });
+
+    if (i === currentPage) {
+      li.classList.add('active');
+    }
+
+    li.appendChild(a);
+    this.paginacion.appendChild(li);
+  }
+}).catch((error) => {
+  console.error(error);
+});
+ }
+
 
 searchAuthor():void{
   this.form_search.addEventListener('submit',(event)=>{

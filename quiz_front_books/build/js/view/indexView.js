@@ -61,18 +61,69 @@ export default class indexView {
         this.contenedor_books = document.querySelector('#sec');
         this.search_bar = document.querySelector('#search_input');
         this.form_search = document.querySelector('#search_form');
-        this.paginacion = document.querySelector('.pagination justify-content-center');
+        this.paginacion = document.querySelector('.pagination');
     }
-    deploy(bookPromise) {
-        this.contenedor_books.innerHTML = '';
+    deploy(bookPromise, currentPage) {
+        //  this.contenedor_books.innerHTML = ''
+        //   bookPromise.then((books)=>{
+        //   console.log(books);
+        //   const libros = books.books
+        //   libros.forEach((libro: bookInterface)=>{
+        //   this.contenedor_books.innerHTML += this.printBooks(libro)
+        //   })
+        //   }).catch((err)=>{
+        //     console.error(err)
+        //   })
+        // }
         bookPromise.then((books) => {
-            console.log(books);
             const libros = books.books;
-            libros.forEach((libro) => {
-                this.contenedor_books.innerHTML += this.printBooks(libro);
+            this.contenedor_books.innerHTML = '';
+            libros.forEach((book) => {
+                this.contenedor_books.innerHTML += this.printBooks(book);
             });
-        }).catch((err) => {
-            console.error(err);
+            // Remove previous pagination
+            this.paginacion.innerHTML = '';
+            // Calculate total pages (assumed)
+            const totalBooks = books.total;
+            const totalPages = Math.ceil(totalBooks / 5);
+            // Calculate start and end page based on current page
+            let startPage = Math.max(1, currentPage - 5);
+            let endPage = Math.min(totalPages, startPage + 9);
+            // Adjust start and end page if there are less than 10 pages
+            if (totalPages <= 10) {
+                startPage = 1;
+                endPage = totalPages;
+            }
+            else {
+                // Adjust start and end page if current page is close to beginning or end
+                if (currentPage <= 5) {
+                    endPage = 20;
+                }
+                else if (currentPage >= totalPages - 4) {
+                    startPage = totalPages - 9;
+                }
+            }
+            // Generate pagination
+            for (let i = startPage; i <= endPage; i++) {
+                const li = document.createElement('li');
+                li.classList.add('page-item');
+                const a = document.createElement('a');
+                a.classList.add('page-link');
+                a.href = '#';
+                a.textContent = i.toString();
+                // Add event listener to handle page navigation
+                a.addEventListener('click', () => {
+                    var _a;
+                    (_a = this.controller) === null || _a === void 0 ? void 0 : _a.sendPage(i);
+                });
+                if (i === currentPage) {
+                    li.classList.add('active');
+                }
+                li.appendChild(a);
+                this.paginacion.appendChild(li);
+            }
+        }).catch((error) => {
+            console.error(error);
         });
     }
     searchAuthor() {

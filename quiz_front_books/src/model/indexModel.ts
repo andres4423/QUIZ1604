@@ -6,7 +6,7 @@ export default class indexModel{
 
   public async getBook(currentPage: number): Promise<bookInterface[]>{
   return new Promise((resolve, reject) =>{
-  const response = fetch(`http://localhost:3000/books?paginaActual=${currentPage}`, {
+  const response = fetch(`http://localhost:3000/books?currentPage=${currentPage}`, {
     method: 'GET',
     headers: {
       "Content-type": 'application/json'

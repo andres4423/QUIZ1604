@@ -13,7 +13,7 @@ export default class indexModel {
     getBook(currentPage) {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
-                const response = fetch(`http://localhost:3000/books?paginaActual=${currentPage}`, {
+                const response = fetch(`http://localhost:3000/books?currentPage=${currentPage}`, {
                     method: 'GET',
                     headers: {
                         "Content-type": 'application/json'
