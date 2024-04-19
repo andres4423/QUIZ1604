@@ -1,6 +1,7 @@
 import { bookInterface } from "../types/bookInterface";
 
 export default class indexModel{
+  private cantidadLibros:number = 0;
   constructor(){
   }
 
@@ -13,8 +14,11 @@ export default class indexModel{
     }
   })
   response.then(async(data)=>{
-    resolve(data.json())
-     console.log(data)
+    let libros = await data.json()
+    this.cantidadLibros = libros.total_books
+    let books1 = libros.books
+    resolve(books1)
+    console.log(data)
    }).catch((error)=>{
      reject(error)
    })
@@ -35,10 +39,14 @@ export default class indexModel{
        })
        response.then(async(data)=>{
         resolve(data.json())
-         console.log(data)
+         console.log("el buscador da" , data)
        }).catch((error)=>{
          reject(error)
        })
      })
+   }
+
+   public getTotal():number{
+  return this.cantidadLibros;
    }
 }

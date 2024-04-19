@@ -12,6 +12,7 @@ export default class indexController {
     }
     sendData(valor_busqueda) {
         this.view.deploy(this.model.searchAuthor(valor_busqueda), 1);
+        this.view.deployAuthor(this.model.searchAuthor(valor_busqueda));
         console.log(valor_busqueda);
     }
     sendPage(pageNumber) {

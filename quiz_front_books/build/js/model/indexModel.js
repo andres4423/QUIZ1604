@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 export default class indexModel {
     constructor() {
+        this.cantidadLibros = 0;
     }
     getBook(currentPage) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -20,7 +21,10 @@ export default class indexModel {
                     }
                 });
                 response.then((data) => __awaiter(this, void 0, void 0, function* () {
-                    resolve(data.json());
+                    let libros = yield data.json();
+                    this.cantidadLibros = libros.total_books;
+                    let books1 = libros.books;
+                    resolve(books1);
                     console.log(data);
                 })).catch((error) => {
                     reject(error);
@@ -43,11 +47,14 @@ export default class indexModel {
                 });
                 response.then((data) => __awaiter(this, void 0, void 0, function* () {
                     resolve(data.json());
-                    console.log(data);
+                    console.log("el buscador da", data);
                 })).catch((error) => {
                     reject(error);
                 });
             });
         });
+    }
+    getTotal() {
+        return this.cantidadLibros;
     }
 }
