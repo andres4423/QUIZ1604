@@ -30,22 +30,35 @@ export default class indexView {
         this.contenedor_books.innerHTML += this.printBooks(libro);
       });
 
-      // Generar la paginación
       const totalBooks = books.total_books;
       const totalPages = Math.ceil(totalBooks / 3);
-      const maxPagesToShow = 10; // Máximo de números de página a mostrar
+      const maxPagesToShow = 10;
 
       let startPage = 1;
       let endPage = Math.min(totalPages, maxPagesToShow);
 
-      // Calcular la página inicial y final a mostrar
       if (currentPage > Math.floor(maxPagesToShow / 2)) {
         startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
         endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
       }
 
-      // Agregar botones para las páginas
-      for (let i = startPage; i <= endPage; i++) {
+      // Anterior  boton
+      if (startPage > 1) {
+        const prevLi = document.createElement('li');
+        prevLi.classList.add('page-item');
+        const prevLink = document.createElement('a');
+        prevLink.classList.add('page-link');
+        prevLink.textContent = '<<';
+        prevLink.href = '#';
+        prevLink.addEventListener('click', () => {
+          this.controller?.sendPage(currentPage - 1);
+        });
+        prevLi.appendChild(prevLink);
+        this.paginacion.appendChild(prevLi);
+      }
+
+      // Agregar números
+       for (let i = startPage; i <= endPage; i++) {
         const li = document.createElement('li');
         li.classList.add('page-item');
         if (i === currentPage) {
@@ -62,22 +75,7 @@ export default class indexView {
         this.paginacion.appendChild(li);
       }
 
-      // Agregar botón "anterior" si es necesario
-      if (startPage > 1) {
-        const prevLi = document.createElement('li');
-        prevLi.classList.add('page-item');
-        const prevLink = document.createElement('a');
-        prevLink.classList.add('page-link');
-        prevLink.textContent = '<<';
-        prevLink.href = '#';
-        prevLink.addEventListener('click', () => {
-          this.controller?.sendPage(currentPage - 1);
-        });
-        prevLi.appendChild(prevLink);
-        this.paginacion.appendChild(prevLi);
-      }
-
-      // Agregar botón "siguiente" si es necesario
+      // botón siguiente
       if (endPage < totalPages) {
         const nextLi = document.createElement('li');
         nextLi.classList.add('page-item');
@@ -95,15 +93,75 @@ export default class indexView {
       console.error(err);
     });
   }
-
-
-  public deployAuthor(bookPromise: Promise<bookInterface[]>): void {
+  public deployAuthor(bookPromise: Promise<bookInterface[]>, currentPage: number): void {
     this.contenedor_books.innerHTML = '';
+    this.paginacion.innerHTML = ''; // Limpiar la paginación antes de agregar los nuevos elementos
+
     bookPromise.then((books) => {
       const libros = books.books;
       libros.forEach((libro: bookInterface) => {
         this.contenedor_books.innerHTML += this.printBooks(libro);
       });
+
+      const totalBooks = books.total_books;
+      const totalPages = Math.ceil(totalBooks / 3);
+      const maxPagesToShow = 10;
+
+      let startPage = 1;
+      let endPage = Math.min(totalPages, maxPagesToShow);
+
+      if (currentPage > Math.floor(maxPagesToShow / 2)) {
+        startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+        endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+      }
+
+      // Anterior  boton
+      if (startPage > 1) {
+        const prevLi = document.createElement('li');
+        prevLi.classList.add('page-item');
+        const prevLink = document.createElement('a');
+        prevLink.classList.add('page-link');
+        prevLink.textContent = '<<';
+        prevLink.href = '#';
+        prevLink.addEventListener('click', () => {
+          this.controller?.sendPage(currentPage - 1);
+        });
+        prevLi.appendChild(prevLink);
+        this.paginacion.appendChild(prevLi);
+      }
+
+      // Agregar números
+       for (let i = startPage; i <= endPage; i++) {
+        const li = document.createElement('li');
+        li.classList.add('page-item');
+        if (i === currentPage) {
+          li.classList.add('active');
+        }
+        const a = document.createElement('a');
+        a.classList.add('page-link');
+        a.textContent = i.toString();
+        a.href = '#';
+        a.addEventListener('click', () => {
+          this.controller?.sendPage(i);
+        });
+        li.appendChild(a);
+        this.paginacion.appendChild(li);
+      }
+
+      // botón siguiente
+      if (endPage < totalPages) {
+        const nextLi = document.createElement('li');
+        nextLi.classList.add('page-item');
+        const nextLink = document.createElement('a');
+        nextLink.classList.add('page-link');
+        nextLink.textContent = '>>';
+        nextLink.href = '#';
+        nextLink.addEventListener('click', () => {
+          this.controller?.sendPage(currentPage + 1);
+        });
+        nextLi.appendChild(nextLink);
+        this.paginacion.appendChild(nextLi);
+      }
     }).catch((err) => {
       console.error(err);
     });
