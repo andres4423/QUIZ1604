@@ -14,6 +14,3 @@ touch src/view/indexView.ts
 touch src/types/indexInterface.ts
 
 npx tsc --init
-
-## "dev": "ts-node-dev --env-file=config/.development.env src/index.ts"
-##habilitar el json si es necesario.

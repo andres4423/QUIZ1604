@@ -10,14 +10,6 @@ export default class booksModel{
        return { datos, total_books }
      }
 
-    // getbooks = async (currentPage: number): Promise<bookInterface[]> =>{
-    //   const startIndex = (currentPage - 1 ) * 3
-    //   const datos = books.slice(startIndex, startIndex + 3)
-    //   const total_books = books.length;
-    //   console.log(datos)
-    //   return datos
-    // }
-
     getAuthors = async (author: string): Promise<bookInterface[] | undefined> => {
       const booksbyauthor = (books as bookInterface[]).filter((book) => {
       return book.authors.includes(author)
