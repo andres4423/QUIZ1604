@@ -4,7 +4,7 @@ export default class indexView {
             this.controller = controller;
         };
         this.printBooks = (book) => {
-            var _a, _b;
+            var _a, _b, _c, _d;
             const categoriesListItems = (_a = book.categories) === null || _a === void 0 ? void 0 : _a.map(category => `<li>${category}</li>`).join('');
             const date = ((_b = book.publishedDate) === null || _b === void 0 ? void 0 : _b.$date) ? new Date(book.publishedDate.$date) : new Date();
             const date2 = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).format(date);
@@ -23,12 +23,12 @@ export default class indexView {
                 <p><strong>Published Date:</strong> ${date2}</p>
                 <p><strong>Page Count:</strong> ${book.pageCount}</p>
                 <h4>Short Description:</h4>
-                <p>${book.shortDescription}</p>
+                <p>${(_c = book.shortDescription) !== null && _c !== void 0 ? _c : "No se encuentra short description"}</p>
                 <h4>Long Description:</h4>
-                <p>${book.longDescription}</p>
+                <p>${(_d = book.longDescription) !== null && _d !== void 0 ? _d : "No se encuentra long description"}</p>
                 <h4>Categories:</h4>
                 <ul>
-                  <li>${categoriesListItems}</li>
+                  <li>${categoriesListItems !== null && categoriesListItems !== void 0 ? categoriesListItems : "No se encuentran categorias"}</li>
                 </ul>
                 <a href="#" class="btn btn-primary mt-3">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag" viewBox="0 0 16 16">

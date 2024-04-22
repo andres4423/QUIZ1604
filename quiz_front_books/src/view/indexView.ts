@@ -105,7 +105,7 @@ export default class indexView {
       });
 
       const totalBooks = books?.total_books || 0;
-      const totalPages = Math.max(Math.ceil(totalBooks / 3), 1); 
+      const totalPages = Math.max(Math.ceil(totalBooks / 3), 1);
       const maxPagesToShow = 10;
 
       let startPage = 1;
@@ -177,8 +177,6 @@ export default class indexView {
     });
   }
 
-
-
   printBooks = (book: bookInterface): string => {
      const categoriesListItems = book.categories?.map(category => `<li>${category}</li>`).join('');
 
@@ -199,12 +197,12 @@ export default class indexView {
                 <p><strong>Published Date:</strong> ${date2}</p>
                 <p><strong>Page Count:</strong> ${book.pageCount}</p>
                 <h4>Short Description:</h4>
-                <p>${book.shortDescription}</p>
+                <p>${book.shortDescription ?? "No se encuentra short description"}</p>
                 <h4>Long Description:</h4>
-                <p>${book.longDescription}</p>
+                <p>${book.longDescription ?? "No se encuentra long description"}</p>
                 <h4>Categories:</h4>
                 <ul>
-                  <li>${categoriesListItems}</li>
+                  <li>${categoriesListItems ?? "No se encuentran categorias"}</li>
                 </ul>
                 <a href="#" class="btn btn-primary mt-3">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag" viewBox="0 0 16 16">
