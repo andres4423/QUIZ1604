@@ -39,7 +39,7 @@ export default class indexModel{
        })
        response.then(async(data)=>{
         resolve(data.json())
-         console.log("el buscador da" , data)
+         console.log(data)
        }).catch((error)=>{
          reject(error)
        })

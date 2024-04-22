@@ -22,7 +22,7 @@ export default class indexView {
 
   public deploy(bookPromise: Promise<bookInterface[]>, currentPage: number): void {
     this.contenedor_books.innerHTML = '';
-    this.paginacion.innerHTML = ''; // Limpiar la paginación antes de agregar los nuevos elementos
+    this.paginacion.innerHTML = '';
 
     bookPromise.then((books) => {
       const libros = books.datos;
@@ -95,78 +95,80 @@ export default class indexView {
   }
   public deployAuthor(bookPromise: Promise<bookInterface[]>, currentPage: number): void {
     this.contenedor_books.innerHTML = '';
-    this.paginacion.innerHTML = ''; 
+    this.paginacion.innerHTML = '';
 
     bookPromise.then((books) => {
-      const libros = books.books;
+
+      const libros = books?.books || [];
       libros.forEach((libro: bookInterface) => {
         this.contenedor_books.innerHTML += this.printBooks(libro);
       });
 
-      // const totalBooks = books.total_books;
-      // const totalPages = Math.ceil(totalBooks / 3);
-      // const maxPagesToShow = 10;
+      const totalBooks = books?.total_books || 0;
+      const totalPages = Math.max(Math.ceil(totalBooks / 3), 1); 
+      const maxPagesToShow = 10;
 
-      // let startPage = 1;
-      // let endPage = Math.min(totalPages, maxPagesToShow);
+      let startPage = 1;
+      let endPage = Math.min(totalPages, maxPagesToShow);
 
-      // if (currentPage > Math.floor(maxPagesToShow / 2)) {
-      //   startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
-      //   endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
-      // }
+      if (currentPage > Math.floor(maxPagesToShow / 2)) {
+        startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+        endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+      }
 
-      // // Anterior  boton
-      // if (startPage > 1) {
-      //   const prevLi = document.createElement('li');
-      //   prevLi.classList.add('page-item');
-      //   const prevLink = document.createElement('a');
-      //   prevLink.classList.add('page-link');
-      //   prevLink.textContent = '<<';
-      //   prevLink.href = '#';
-      //   prevLink.addEventListener('click', () => {
-      //     this.controller?.sendPage(currentPage - 1);
-      //   });
-      //   prevLi.appendChild(prevLink);
-      //   this.paginacion.appendChild(prevLi);
-      // }
+      // Anterior botón
+      if (startPage > 1) {
+        const prevLi = document.createElement('li');
+        prevLi.classList.add('page-item');
+        const prevLink = document.createElement('a');
+        prevLink.classList.add('page-link');
+        prevLink.textContent = '<<';
+        prevLink.href = '#';
+        prevLink.addEventListener('click', () => {
+          this.controller?.sendPage(currentPage - 1);
+        });
+        prevLi.appendChild(prevLink);
+        this.paginacion.appendChild(prevLi);
+      }
 
-      // // Agregar números
-      //  for (let i = startPage; i <= endPage; i++) {
-      //   const li = document.createElement('li');
-      //   li.classList.add('page-item');
-      //   if (i === currentPage) {
-      //     li.classList.add('active');
-      //   }
-      //   const a = document.createElement('a');
-      //   a.classList.add('page-link');
-      //   a.textContent = i.toString();
-      //   a.href = '#';
-      //   a.addEventListener('click', () => {
-      //     this.controller?.sendPage(i);
-      //   });
-      //   li.appendChild(a);
-      //   this.paginacion.appendChild(li);
-      // }
+      // Agregar números de página
+      for (let i = startPage; i <= endPage; i++) {
+        const li = document.createElement('li');
+        li.classList.add('page-item');
+        if (i === currentPage) {
+          li.classList.add('active');
+        }
+        const a = document.createElement('a');
+        a.classList.add('page-link');
+        a.textContent = i.toString();
+        a.href = '#';
+        a.addEventListener('click', () => {
+          this.controller?.sendPage(i);
+        });
+        li.appendChild(a);
+        this.paginacion.appendChild(li);
+      }
 
-      // // botón siguiente
-      // if (endPage < totalPages) {
-      //   const nextLi = document.createElement('li');
-      //   nextLi.classList.add('page-item');
-      //   const nextLink = document.createElement('a');
-      //   nextLink.classList.add('page-link');
-      //   nextLink.textContent = '>>';
-      //   nextLink.href = '#';
-      //   nextLink.addEventListener('click', () => {
-      //     this.controller?.sendPage(currentPage + 1);
-      //   });
-      //   nextLi.appendChild(nextLink);
-      //   this.paginacion.appendChild(nextLi);
-      // }
+      // Siguiente botón
+      if (endPage < totalPages) {
+        const nextLi = document.createElement('li');
+        nextLi.classList.add('page-item');
+        const nextLink = document.createElement('a');
+        nextLink.classList.add('page-link');
+        nextLink.textContent = '>>';
+        nextLink.href = '#';
+        nextLink.addEventListener('click', () => {
+          this.controller?.sendPage(currentPage + 1);
+        });
+        nextLi.appendChild(nextLink);
+        this.paginacion.appendChild(nextLi);
+      }
     }).catch((err) => {
       console.error(err);
     });
   }
 
+  //envia el author
   public searchAuthor(): void {
     this.form_search.addEventListener('submit', (event) => {
       event.preventDefault();
@@ -178,8 +180,10 @@ export default class indexView {
 
 
   printBooks = (book: bookInterface): string => {
-    const categoriesListItems = book.categories.map(category => `<li>${category.trim()}</li>`);
-    const categorias = categoriesListItems.join("");
+     const categoriesListItems = book.categories?.map(category => `<li>${category}</li>`).join('');
+
+    const date = book.publishedDate?.$date ? new Date(book.publishedDate.$date) : new Date();
+    const date2 = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).format(date);
     return `
       <div class="row justify-content-center">
         <div class="col-md-8">
@@ -192,7 +196,7 @@ export default class indexView {
                 <h2>${book.title}</h2>
                 <p><strong>ISBN:</strong> ${book.isbn}</p>
                 <p><strong>Authors:</strong> &nbsp${book.authors}</p>
-                <p><strong>Published Date:</strong> ${book.publishedDate?.$date}</p>
+                <p><strong>Published Date:</strong> ${date2}</p>
                 <p><strong>Page Count:</strong> ${book.pageCount}</p>
                 <h4>Short Description:</h4>
                 <p>${book.shortDescription}</p>
@@ -200,7 +204,7 @@ export default class indexView {
                 <p>${book.longDescription}</p>
                 <h4>Categories:</h4>
                 <ul>
-                  <li>${categorias}</li>
+                  <li>${categoriesListItems}</li>
                 </ul>
                 <a href="#" class="btn btn-primary mt-3">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bag" viewBox="0 0 16 16">

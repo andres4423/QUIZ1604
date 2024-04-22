@@ -47,7 +47,7 @@ export default class indexModel {
                 });
                 response.then((data) => __awaiter(this, void 0, void 0, function* () {
                     resolve(data.json());
-                    console.log("el buscador da", data);
+                    console.log(data);
                 })).catch((error) => {
                     reject(error);
                 });
